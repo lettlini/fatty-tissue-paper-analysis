@@ -1,0 +1,14 @@
+name: fatty-tissue-analysis
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+    - tqdm
+    - numpy<2
+    - scipy
+    - polars
+    - matplotlib
+    - seaborn
+    - pyarrow

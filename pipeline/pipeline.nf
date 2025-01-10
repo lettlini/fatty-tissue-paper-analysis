@@ -44,7 +44,7 @@ workflow {
         parent_dir_out,
     )
 
-    annotate_cell_density(structure_abstraction.out.results.join(cell_approximation.out.results, by: [0], failOnDuplicate: true, failOnMismatch: true), parent_dir_out)
+    annotate_cell_density(structure_abstraction.out.results.join(cell_approximation.out.results, by: [0], failOnDuplicate: true, failOnMismatch: true), params.mum_per_px, parent_dir_out)
 
     cell_tracking_overlap(label_cells.out.results.join(annotate_cell_density.out.results, by: [0], failOnDuplicate: true, failOnMismatch: true), parent_dir_out)
     build_graphs(cell_tracking_overlap.out.results, params.mum_per_px, parent_dir_out)
@@ -110,6 +110,7 @@ process annotate_cell_density {
 
     input:
     tuple val(basename), path(abstract_structure_file), path(cell_approximation)
+    val mum_per_px
     val parent_dir_out
 
     output:
@@ -121,6 +122,7 @@ process annotate_cell_density {
         --ast_infile="${abstract_structure_file}" \
         --cell_approximation_infile=${cell_approximation} \
         --outfile="abstract_structure_density_annotated.pickle" \
+        --mum_per_px=${mum_per_px} \
         --cpus=${task.cpus}
     """
 }

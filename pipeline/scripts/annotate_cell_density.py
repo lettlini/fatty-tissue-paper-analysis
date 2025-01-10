@@ -11,16 +11,28 @@ from core_data_utils.transformations import BaseMultiDataSetTransformation
 
 class AnnotateCellDensityTransformation(BaseMultiDataSetTransformation):
 
+    def __init__(self, mum_per_px: float):
+        self._mum_per_px = mum_per_px
+        super().__init__()
+
     def _transform_single_entry(
         self, entry: BaseDataSetEntry, dataset_properties: dict
     ) -> BaseDataSetEntry:
         ast: dict = entry.data["abstract_structure"]
         cellapprox: np.array = entry.data["cell_approximation"]
 
-        cell_density = (cellapprox > 0).mean()
+        occupied_area_fraction = (cellapprox > 0).mean()
+
+        num_labels, _, _, _ = cv2.connectedComponentsWithStats(
+            (cellapprox > 0).astype(np.uint8), connectivity=8
+        )
+        cell_density_per_mum_squared = (num_labels - 1) / (
+            cellapprox.shape[0] * cellapprox.shape[1] * self._mum_per_px**2
+        )
 
         for _, props in ast.items():
-            props["cell_density_fraction"] = cell_density
+            props["occupied_area_fraction"] = occupied_area_fraction
+            props["cell_density_per_mum_squared"] = cell_density_per_mum_squared
 
         return BaseDataSetEntry(identifier=entry.identifier, data=ast)
 
@@ -38,6 +50,7 @@ if __name__ == "__main__":
     parser.add_argument("--ast_infile", type=str, required=True)
     parser.add_argument("--cell_approximation_infile", type=str, required=True)
     parser.add_argument("--outfile", type=str, required=True)
+    parser.add_argument("--mum_per_px", type=float, required=True)
     parser.add_argument(
         "--cpus",
         required=True,
@@ -50,7 +63,7 @@ if __name__ == "__main__":
     cell_approx_ds = BaseDataSet.from_pickle(args.cell_approximation_infile)
     abstract_structure_ds = BaseDataSet.from_pickle(args.ast_infile)
 
-    x = AnnotateCellDensityTransformation()(
+    x = AnnotateCellDensityTransformation(args.mum_per_px)(
         cpus=1,
         abstract_structure=abstract_structure_ds,
         cell_approximation=cell_approx_ds,

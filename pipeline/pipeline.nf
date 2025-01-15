@@ -11,6 +11,7 @@ include { annotate_neighbor_retention            } from './cellular-dynamics-nf-
 include { annotate_D2min                         } from './cellular-dynamics-nf-modules/modules/tracking/annotate_D2min/main.nf'
 include { assemble_cell_track_dataframe          } from './cellular-dynamics-nf-modules/modules/tracking/assemble_cell_tracks_dataframe/main.nf'
 include { calculate_local_density                } from './cellular-dynamics-nf-modules/modules/graph_processing/calculate_local_density/main.nf'
+include { concatenate_tracking_dataframes        } from './cellular-dynamics-nf-modules/modules/tracking/concatenate_tracking_dataframes/main.nf'
 
 workflow {
 
@@ -52,7 +53,8 @@ workflow {
     annotate_D2min(build_graphs.out.results, params.delta_t_minutes, params.lag_times_minutes, params.mum_per_px, params.minimum_neighbors, parent_dir_out)
     calculate_local_density(annotate_D2min.out.results, parent_dir_out)
     assemble_cell_track_dataframe(calculate_local_density.out.results, params.delta_t_minutes, params.include_attrs, params.exclude_attrs, parent_dir_out)
-    add_cell_culture_metadata(assemble_cell_track_dataframe.out.results, params.provider, parent_dir_out)
+    all_dataframes_list = add_cell_culture_metadata(assemble_cell_track_dataframe.out.results, params.provider, parent_dir_out).collect { _first, second -> second }
+    concatenate_tracking_dataframes(all_dataframes_list, parent_dir_out)
 }
 
 process prepare_dataset_from_raw {

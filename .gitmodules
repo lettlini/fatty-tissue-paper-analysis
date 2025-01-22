@@ -1,3 +1,6 @@
 [submodule "pipeline/cellular-dynamics-nf-modules"]
 	path = pipeline/cellular-dynamics-nf-modules
 	url = https://github.com/lettlini/cellular-dynamics-nf-modules.git
+[submodule "data-preparation/cellular-dynamics-nf-modules"]
+	path = data-preparation/cellular-dynamics-nf-modules
+	url = https://github.com/lettlini/cellular-dynamics-nf-modules.git

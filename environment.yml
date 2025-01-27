@@ -12,3 +12,5 @@ dependencies:
     - matplotlib
     - seaborn
     - pyarrow
+    - networkx
+    - git+https://github.com/lettlini/core-data-utils

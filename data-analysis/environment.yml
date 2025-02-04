@@ -1,4 +1,4 @@
-name: fatty-tissue-analysis
+name: datan-fatty_tissue
 channels:
   - conda-forge
 dependencies:

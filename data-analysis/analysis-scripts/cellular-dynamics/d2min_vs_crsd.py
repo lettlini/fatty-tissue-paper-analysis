@@ -1,11 +1,12 @@
+import os
 from argparse import ArgumentParser
-import polars as pl
-import numpy as np
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
+import polars as pl
 import seaborn as sns
 from scipy.stats import gaussian_kde, pearsonr
-import os
 
 plt.rcParams.update(
     {

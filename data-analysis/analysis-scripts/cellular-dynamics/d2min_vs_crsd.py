@@ -29,7 +29,7 @@ def plot_d2min_vs_crsd(crsd, d2min, title: str):
     idx = np.argsort(z)
     crsd, d2min, z = crsd[idx], d2min[idx], z[idx]
 
-    ax.scatter(crsd, d2min, c=z, s=1, edgecolor=None, cmap="viridis", alpha=0.5)
+    ax.scatter(crsd, d2min, c=z, s=1, edgecolor=None, cmap="Reds", alpha=0.5)
     ax.plot(
         [0, np.percentile(crsd, 97)],
         [0, np.percentile(crsd, 97)],

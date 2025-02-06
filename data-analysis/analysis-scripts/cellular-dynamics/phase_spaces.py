@@ -129,6 +129,19 @@ def plot_heatmap(
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111)
 
+    if z_cutoff:
+        if np.nanmax(matrix) > z_cutoff:
+            ticks = np.linspace(np.nanmin(matrix), z_cutoff, 6)
+            labels = [*map(lambda x: f"{x:.2f}", ticks[:-1])] + [
+                f"$\geq$ {z_cutoff:.1f}"
+            ]
+        else:
+            ticks = np.linspace(np.nanmin(matrix), np.nanmax(matrix), 6)
+            labels = [*map(lambda x: f"{x:.2f}", ticks)]
+    else:
+        ticks = np.linspace(np.nanmin(matrix), np.nanmax(matrix), 6)
+        labels = [*map(lambda x: f"{x:.2f}", ticks)]
+
     matrix = np.clip(matrix, 0, z_cutoff) if z_cutoff else matrix
 
     im = ax.imshow(matrix, cmap="Reds", interpolation="nearest", origin="upper")
@@ -136,10 +149,9 @@ def plot_heatmap(
     # Add colorbar
     cbar = fig.colorbar(im, ax=ax, shrink=0.6)
     cbar.set_label(colorbar_label)
-    ticks = list(cbar.get_ticks())
-    ticks[-1] = z_cutoff if z_cutoff else ticks[-1]
+
     cbar.set_ticks(ticks)
-    cbar.set_ticklabels([*map(str, ticks[:-1])] + [f"$\geq$ {z_cutoff:.1f}"])
+    cbar.set_ticklabels(labels)
 
     ax.set_xticks(range(len(x_bins)), np.round(x_bins, 2))
     ax.set_yticks(range(len(y_bins)), np.round(y_bins, 2))
@@ -219,7 +231,7 @@ def phase_spaces(data_preparation_dir: str, cell_class: str, parent_dir_out: str
             title=f"{motility_str} vs {latex_strings[inx_col]['name']} and {latex_strings[iny_col]['name']}",
             colorbar_label=motility_str,
             z_cutoff=np.percentile(
-                current_filtered_df[motility_measure].to_numpy(), 98
+                current_filtered_df[motility_measure].to_numpy(), 96
             ),
         )
 

@@ -19,12 +19,6 @@ workflow data_preparation {
     input_datasets
 
     main:
-    // Transform the channel to emit both the directory and its basename
-    // This creates a tuple channel: [dir, basename]
-    input_datasets = input_datasets.map { dir ->
-        def basename = dir.name
-        [basename, dir]
-    }
 
     parent_dir_out = Channel.value(file(params.parent_outdir).resolve(params.out_dir).toString())
     min_nucleus_area_pxsq = Channel.value(params.min_nucleus_area_mumsq / (params.mum_per_px ** 2))

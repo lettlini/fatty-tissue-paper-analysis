@@ -1,4 +1,4 @@
-workflow {
+workflow data_analysis {
     new File(params.parent_outdir).deleteDir()
     new File(params.parent_outdir).mkdirs()
 

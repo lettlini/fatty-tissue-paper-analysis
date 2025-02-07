@@ -1,4 +1,5 @@
 import os
+import sys
 from argparse import ArgumentParser
 from itertools import product
 from typing import Optional
@@ -8,8 +9,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import polars as pl
 import seaborn as sns
-
-import sys
 
 plt.rcParams.update(
     {

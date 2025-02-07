@@ -15,9 +15,10 @@ include { concatenate_tracking_dataframes        } from './cellular-dynamics-nf-
 include { nucleus_displacement_index             } from './cellular-dynamics-nf-modules/modules/image_processing/nucleus_displacement_index/main.nf'
 include { cage_relative_squared_displacement     } from './cellular-dynamics-nf-modules/modules/tracking/cage_relative_squared_displacement/main.nf'
 workflow data_preparation {
+    take:
+    input_datasets
 
-    input_datasets = Channel.fromPath(file(params.parent_indir).resolve(params.in_dir).toString(), type: "dir")
-
+    main:
     // Transform the channel to emit both the directory and its basename
     // This creates a tuple channel: [dir, basename]
     input_datasets = input_datasets.map { dir ->
@@ -64,6 +65,10 @@ workflow data_preparation {
     assemble_cell_track_dataframe(calculate_local_density.out.results, params.delta_t_minutes, params.include_attrs, params.exclude_attrs, parent_dir_out)
     all_dataframes_list = add_cell_culture_metadata(assemble_cell_track_dataframe.out.results, params.provider, parent_dir_out).collect { _first, second -> second }
     concatenate_tracking_dataframes(all_dataframes_list, parent_dir_out)
+
+    emit:
+    all_graph_datasets        = calculate_local_density.out.results
+    all_cell_tracks_dataframe = concatenate_tracking_dataframes.out.results
 }
 
 process prepare_dataset_from_raw {
@@ -84,7 +89,7 @@ process prepare_dataset_from_raw {
     """
     echo "Processing: ${basename}"
     echo "Dataset Path: ${dataset_path}, Basename: ${basename}"
-    python ${projectDir}/scripts/prepare_dataset.py \
+    python ${moduleDir}/scripts/prepare_dataset.py \
         --indir="${dataset_path}" \
         --outfile="original_dataset.pickle" \
         --provider=${provider} \
@@ -108,7 +113,7 @@ process add_cell_culture_metadata {
 
     script:
     """
-    python ${projectDir}/scripts/add_dataset_metadata.py \
+    python ${moduleDir}/scripts/add_dataset_metadata.py \
         --infile="${cell_track_df_path}" \
         --outfile="cell_tracks_with_metadata.ipc" \
         --basename=${basename} \
@@ -131,7 +136,7 @@ process annotate_cell_density {
 
     script:
     """
-    python ${projectDir}/scripts/annotate_cell_density.py \
+    python ${moduleDir}/scripts/annotate_cell_density.py \
         --ast_infile="${abstract_structure_file}" \
         --cell_approximation_infile=${cell_approximation} \
         --outfile="abstract_structure_density_annotated.pickle" \

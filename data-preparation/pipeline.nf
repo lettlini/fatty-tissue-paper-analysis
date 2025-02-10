@@ -32,6 +32,7 @@ workflow data_preparation {
         min_nucleus_area_pxsq,
         parent_dir_out,
     )
+
     cell_approximation(nuclei_segmentation.out.results, cell_cutoff_px, parent_dir_out)
     label_nuclei(nuclei_segmentation.out.results, "nuclei", parent_dir_out)
     label_cells(cell_approximation.out.results, "cells", parent_dir_out)
@@ -47,13 +48,7 @@ workflow data_preparation {
     cell_tracking_overlap(label_cells.out.results.join(annotate_cell_density.out.results, by: [0], failOnDuplicate: true, failOnMismatch: true), parent_dir_out)
     build_graphs(cell_tracking_overlap.out.results, params.mum_per_px, parent_dir_out)
 
-    // annotate nucleous displacement index
-    nucleus_displacement_index(
-        label_nuclei.out.results.join(label_cells.out.results, failOnDuplicate: true, failOnMismatch: true).join(build_graphs.out.results, failOnDuplicate: true, failOnMismatch: true),
-        parent_dir_out,
-    )
-
-    annotate_D2min(nucleus_displacement_index.out.results, params.delta_t_minutes, params.lag_times_minutes, params.mum_per_px, params.minimum_neighbors, parent_dir_out)
+    annotate_D2min(build_graphs.out.results, params.delta_t_minutes, params.lag_times_minutes, params.mum_per_px, params.minimum_neighbors, parent_dir_out)
     cage_relative_squared_displacement(annotate_D2min.out.results, params.delta_t_minutes, params.lag_times_minutes, params.mum_per_px, parent_dir_out)
     calculate_local_density(cage_relative_squared_displacement.out.results, parent_dir_out)
     assemble_cell_track_dataframe(calculate_local_density.out.results, params.delta_t_minutes, params.include_attrs, params.exclude_attrs, parent_dir_out)

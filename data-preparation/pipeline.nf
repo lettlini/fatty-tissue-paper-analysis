@@ -50,14 +50,18 @@ workflow data_preparation {
 
     annotate_D2min(build_graphs.out.results, params.delta_t_minutes, params.lag_times_minutes, params.mum_per_px, params.minimum_neighbors, parent_dir_out)
     cage_relative_squared_displacement(annotate_D2min.out.results, params.delta_t_minutes, params.lag_times_minutes, params.mum_per_px, parent_dir_out)
-    calculate_local_density(cage_relative_squared_displacement.out.results, parent_dir_out)
+
+    // graph dataset
+    all_graph_datasets = calculate_local_density(cage_relative_squared_displacement.out.results, parent_dir_out).collect()
+
+    // dataframe
     assemble_cell_track_dataframe(calculate_local_density.out.results, params.delta_t_minutes, params.include_attrs, params.exclude_attrs, parent_dir_out)
     all_dataframes_list = add_cell_culture_metadata(assemble_cell_track_dataframe.out.results, params.provider, parent_dir_out).collect { _first, second -> second }
     concatenate_tracking_dataframes(all_dataframes_list, parent_dir_out)
 
     emit:
-    all_graph_datasets        = calculate_local_density.out.results
     all_cell_tracks_dataframe = concatenate_tracking_dataframes.out.results
+    all_graph_datasets        = all_graph_datasets // this is a list of tuples of the form [basename, path]
 }
 
 process prepare_dataset_from_raw {

@@ -13,12 +13,11 @@ from tqdm import tqdm
 font_size = 16
 
 
-def motility(data_preparation_dir: str, cell_class: str, parent_dir_out: str):
+def motility(df_file: str, parent_dir_out: str):
 
     # read in combined cell tracking dataframe from ipc file
-    big_dataframe: pl.DataFrame = pl.read_ipc(
-        os.path.join(data_preparation_dir, cell_class, "all_cell_tracks.ipc")
-    )
+    big_dataframe: pl.DataFrame = pl.read_ipc(df_file, memory_map=False)
+
     lag_times_minutes = "30,60,90,120,150,180,210,240".split(",")
     cell_line_names = ["hela", "caski"]
 
@@ -69,9 +68,8 @@ def motility(data_preparation_dir: str, cell_class: str, parent_dir_out: str):
 if __name__ == "__main__":
 
     parser = ArgumentParser()
-    parser.add_argument("--data_preparation_dir", type=str, required=True)
+    parser.add_argument("--dataframe_file", type=str, required=True)
     parser.add_argument("--parent_dir_out", type=str, required=True)
-    parser.add_argument("--cell_class", type=str, required=True)
     args = parser.parse_args()
 
-    motility(args.data_preparation_dir, args.cell_class, args.parent_dir_out)
+    motility(args.dataframe_file, args.parent_dir_out)

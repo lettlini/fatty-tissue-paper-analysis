@@ -59,11 +59,9 @@ def plot_d2min_vs_crsd(crsd, d2min, title: str):
     return f
 
 
-def d2min_vs_crsd(data_preparation_dir: str, cell_class: str, parent_dir_out: str):
+def d2min_vs_crsd(df_file: str, parent_dir_out: str):
     # read in combined cell tracking dataframe from ipc file
-    big_dataframe: pl.DataFrame = pl.read_ipc(
-        os.path.join(data_preparation_dir, cell_class, "all_cell_tracks.ipc")
-    )
+    big_dataframe: pl.DataFrame = pl.read_ipc(df_file, memory_map=False)
 
     # get a list of all lag times
     all_lag_times = [
@@ -103,9 +101,8 @@ def d2min_vs_crsd(data_preparation_dir: str, cell_class: str, parent_dir_out: st
 if __name__ == "__main__":
 
     parser = ArgumentParser()
-    parser.add_argument("--data_preparation_dir", type=str, required=True)
+    parser.add_argument("--dataframe_file", type=str, required=True)
     parser.add_argument("--parent_dir_out", type=str, required=True)
-    parser.add_argument("--cell_class", type=str, required=True)
     args = parser.parse_args()
 
-    d2min_vs_crsd(args.data_preparation_dir, args.cell_class, args.parent_dir_out)
+    d2min_vs_crsd(args.dataframe_file, args.parent_dir_out)

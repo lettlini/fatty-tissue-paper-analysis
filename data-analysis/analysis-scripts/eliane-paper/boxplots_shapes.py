@@ -19,10 +19,8 @@ plt.rcParams.update(
 )
 
 
-def boxplot_shapes(data_preparation_dir: str, cell_class: str, parent_dir_out: str):
-    big_dataframe: pl.DataFrame = pl.read_ipc(
-        os.path.join(data_preparation_dir, cell_class, "all_cell_tracks.ipc")
-    )
+def boxplot_shapes(df_file: str, parent_dir_out: str):
+    big_dataframe: pl.DataFrame = pl.read_ipc(df_file, memory_map=True)
 
     for cln in ["hela", "caski"]:
         cdf = big_dataframe.filter(pl.col("cell_line_name").str.to_lowercase().eq(cln))
@@ -44,9 +42,8 @@ def boxplot_shapes(data_preparation_dir: str, cell_class: str, parent_dir_out: s
 if __name__ == "__main__":
 
     parser = ArgumentParser()
-    parser.add_argument("--data_preparation_dir", type=str, required=True)
+    parser.add_argument("--dataframe_file", type=str, required=True)
     parser.add_argument("--parent_dir_out", type=str, required=True)
-    parser.add_argument("--cell_class", type=str, required=True)
     args = parser.parse_args()
 
-    boxplot_shapes(args.data_preparation_dir, args.cell_class, args.parent_dir_out)
+    boxplot_shapes(args.dataframe_file, args.parent_dir_out)

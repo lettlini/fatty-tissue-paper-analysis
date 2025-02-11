@@ -70,6 +70,8 @@ process prepare_dataset_from_raw {
 
     label "low_cpu", "short_running"
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     tuple val(basename), path(dataset_path)
     val provider
@@ -96,6 +98,8 @@ process add_cell_culture_metadata {
 
     label "low_cpu", "short_running"
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     tuple val(basename), path(cell_track_df_path)
     val provider
@@ -118,6 +122,8 @@ process annotate_cell_density {
     publishDir "${parent_dir_out}/${basename}", mode: 'copy'
 
     label "low_cpu", "short_running"
+
+    conda "${moduleDir}/environment.yml"
 
     input:
     tuple val(basename), path(abstract_structure_file), path(cell_approximation)

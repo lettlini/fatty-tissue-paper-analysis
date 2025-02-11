@@ -12,10 +12,10 @@ from scipy.stats import gaussian_kde, pearsonr, spearmanr
 from tqdm import tqdm
 
 
-def cell_density(data_preparation_dir: str, cell_class: str, parent_dir_out: str):
+def cell_density(df_file: str, parent_dir_out: str):
 
     big_df = pl.read_ipc(
-        os.path.join(data_preparation_dir, cell_class, "all_cell_tracks.ipc"),
+        df_file,
         memory_map=False,
     )
 
@@ -71,9 +71,8 @@ def cell_density(data_preparation_dir: str, cell_class: str, parent_dir_out: str
 if __name__ == "__main__":
 
     parser = ArgumentParser()
-    parser.add_argument("--data_preparation_dir", type=str, required=True)
+    parser.add_argument("--dataframe_file", type=str, required=True)
     parser.add_argument("--parent_dir_out", type=str, required=True)
-    parser.add_argument("--cell_class", type=str, required=True)
     args = parser.parse_args()
 
-    cell_density(args.data_preparation_dir, args.cell_class, args.parent_dir_out)
+    cell_density(args.dataframe_file, args.parent_dir_out)

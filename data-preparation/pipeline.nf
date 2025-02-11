@@ -14,16 +14,11 @@ include { calculate_local_density                } from './cellular-dynamics-nf-
 include { concatenate_tracking_dataframes        } from './cellular-dynamics-nf-modules/modules/tracking/concatenate_tracking_dataframes/main.nf'
 include { nucleus_displacement_index             } from './cellular-dynamics-nf-modules/modules/image_processing/nucleus_displacement_index/main.nf'
 include { cage_relative_squared_displacement     } from './cellular-dynamics-nf-modules/modules/tracking/cage_relative_squared_displacement/main.nf'
-workflow {
+workflow data_preparation {
+    take:
+    input_datasets
 
-    input_datasets = Channel.fromPath(file(params.parent_indir).resolve(params.in_dir).toString(), type: "dir")
-
-    // Transform the channel to emit both the directory and its basename
-    // This creates a tuple channel: [dir, basename]
-    input_datasets = input_datasets.map { dir ->
-        def basename = dir.name
-        [basename, dir]
-    }
+    main:
 
     parent_dir_out = Channel.value(file(params.parent_outdir).resolve(params.out_dir).toString())
     min_nucleus_area_pxsq = Channel.value(params.min_nucleus_area_mumsq / (params.mum_per_px ** 2))
@@ -37,6 +32,7 @@ workflow {
         min_nucleus_area_pxsq,
         parent_dir_out,
     )
+
     cell_approximation(nuclei_segmentation.out.results, cell_cutoff_px, parent_dir_out)
     label_nuclei(nuclei_segmentation.out.results, "nuclei", parent_dir_out)
     label_cells(cell_approximation.out.results, "cells", parent_dir_out)
@@ -52,18 +48,20 @@ workflow {
     cell_tracking_overlap(label_cells.out.results.join(annotate_cell_density.out.results, by: [0], failOnDuplicate: true, failOnMismatch: true), parent_dir_out)
     build_graphs(cell_tracking_overlap.out.results, params.mum_per_px, parent_dir_out)
 
-    // annotate nucleous displacement index
-    nucleus_displacement_index(
-        label_nuclei.out.results.join(label_cells.out.results, failOnDuplicate: true, failOnMismatch: true).join(build_graphs.out.results, failOnDuplicate: true, failOnMismatch: true),
-        parent_dir_out,
-    )
-
-    annotate_D2min(nucleus_displacement_index.out.results, params.delta_t_minutes, params.lag_times_minutes, params.mum_per_px, params.minimum_neighbors, parent_dir_out)
+    annotate_D2min(build_graphs.out.results, params.delta_t_minutes, params.lag_times_minutes, params.mum_per_px, params.minimum_neighbors, parent_dir_out)
     cage_relative_squared_displacement(annotate_D2min.out.results, params.delta_t_minutes, params.lag_times_minutes, params.mum_per_px, parent_dir_out)
-    calculate_local_density(cage_relative_squared_displacement.out.results, parent_dir_out)
+
+    // graph dataset
+    all_graph_datasets = calculate_local_density(cage_relative_squared_displacement.out.results, parent_dir_out).collect()
+
+    // dataframe
     assemble_cell_track_dataframe(calculate_local_density.out.results, params.delta_t_minutes, params.include_attrs, params.exclude_attrs, parent_dir_out)
     all_dataframes_list = add_cell_culture_metadata(assemble_cell_track_dataframe.out.results, params.provider, parent_dir_out).collect { _first, second -> second }
     concatenate_tracking_dataframes(all_dataframes_list, parent_dir_out)
+
+    emit:
+    all_cell_tracks_dataframe = concatenate_tracking_dataframes.out.results
+    all_graph_datasets        = all_graph_datasets // this is a list of tuples of the form [basename, path]
 }
 
 process prepare_dataset_from_raw {
@@ -71,6 +69,8 @@ process prepare_dataset_from_raw {
     publishDir "${parent_dir_out}/${basename}", mode: 'copy'
 
     label "low_cpu", "short_running"
+
+    conda "${moduleDir}/environment.yml"
 
     input:
     tuple val(basename), path(dataset_path)
@@ -84,7 +84,7 @@ process prepare_dataset_from_raw {
     """
     echo "Processing: ${basename}"
     echo "Dataset Path: ${dataset_path}, Basename: ${basename}"
-    python ${projectDir}/scripts/prepare_dataset.py \
+    python ${moduleDir}/scripts/prepare_dataset.py \
         --indir="${dataset_path}" \
         --outfile="original_dataset.pickle" \
         --provider=${provider} \
@@ -98,6 +98,8 @@ process add_cell_culture_metadata {
 
     label "low_cpu", "short_running"
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     tuple val(basename), path(cell_track_df_path)
     val provider
@@ -108,7 +110,7 @@ process add_cell_culture_metadata {
 
     script:
     """
-    python ${projectDir}/scripts/add_dataset_metadata.py \
+    python ${moduleDir}/scripts/add_dataset_metadata.py \
         --infile="${cell_track_df_path}" \
         --outfile="cell_tracks_with_metadata.ipc" \
         --basename=${basename} \
@@ -121,6 +123,8 @@ process annotate_cell_density {
 
     label "low_cpu", "short_running"
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     tuple val(basename), path(abstract_structure_file), path(cell_approximation)
     val mum_per_px
@@ -131,7 +135,7 @@ process annotate_cell_density {
 
     script:
     """
-    python ${projectDir}/scripts/annotate_cell_density.py \
+    python ${moduleDir}/scripts/annotate_cell_density.py \
         --ast_infile="${abstract_structure_file}" \
         --cell_approximation_infile=${cell_approximation} \
         --outfile="abstract_structure_density_annotated.pickle" \

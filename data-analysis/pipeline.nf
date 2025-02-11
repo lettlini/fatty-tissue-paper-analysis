@@ -4,13 +4,15 @@ workflow data_analysis {
     all_graph_datasets
 
     main:
+    parent_dir_out = file(params.parent_outdir_preparation).resolve(params.out_dir).toString()
+
     // clear the parent_outdir
-    new File(params.parent_outdir).deleteDir()
-    new File(params.parent_outdir).mkdirs()
+    new File(parent_dir_out).deleteDir()
+    new File(parent_dir_out).mkdirs()
 
     python_files_ch = Channel.fromPath("${moduleDir}/analysis-scripts/**/*.py", hidden: false)
 
-    execute_python_analysis_script(python_files_ch, all_cell_tracks_dataframe, all_graph_datasets, params.parent_outdir)
+    execute_python_analysis_script(python_files_ch, all_cell_tracks_dataframe, all_graph_datasets, parent_dir_out)
 }
 
 process execute_python_analysis_script {

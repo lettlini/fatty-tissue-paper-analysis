@@ -20,7 +20,7 @@ workflow data_preparation {
 
     main:
 
-    parent_dir_out = Channel.value(file(params.parent_outdir).resolve(params.out_dir).toString())
+    parent_dir_out = Channel.value(file(params.parent_outdir_preparation).resolve(params.out_dir).toString())
     min_nucleus_area_pxsq = Channel.value(params.min_nucleus_area_mumsq / (params.mum_per_px ** 2))
     cell_cutoff_px = Channel.value(params.cell_cutoff_mum / params.mum_per_px)
 

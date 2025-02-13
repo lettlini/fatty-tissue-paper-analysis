@@ -4,6 +4,7 @@ channels:
 dependencies:
   - python=3.12
   - pip
+  - texlive
   - pip:
     - tqdm
     - numpy<2
@@ -14,4 +15,3 @@ dependencies:
     - pyarrow
     - networkx
     - git+https://github.com/lettlini/core-data-utils
-    - texlive

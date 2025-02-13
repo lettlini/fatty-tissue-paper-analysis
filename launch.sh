@@ -1,14 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=nextflow_pipeline   # Job name
-#SBATCH --output=/work/kl63sahy-monolayer/nextflow/nextflow-logs/nextflow_%j.out       # Standard output log (%j will be replaced with the job ID)
-#SBATCH --error=/work/kl63sahy-monolayer/nextflow/nextflow-logs/nextflow_%j.err        # Standard error log (%j will be replaced with the job ID)
+#SBATCH --output=/home/sc.uni-leipzig.de/kl63sahy/nextflow/nextflow-logs/nextflow_%j.out       # Standard output log (%j will be replaced with the job ID)
+#SBATCH --error=/home/sc.uni-leipzig.de/kl63sahy/nextflow/nextflow-logs/nextflow_%j.err        # Standard error log (%j will be replaced with the job ID)
 #SBATCH --ntasks=1                     # Number of tasks (we're running a single task, Nextflow will handle the rest)
 #SBATCH --cpus-per-task=1             # Number of CPU cores per task
 #SBATCH --mem=2G                     # Memory allocation per task (adjust as needed)
 #SBATCH --time=3-00:00:00
 #SBATCH --partition=polaris-long           # Partition to submit to (adjust if needed)
 
-OUTPUT_DIR=/work/kl63sahy-monolayer/nextflow/nextflow-reports/${SLURM_JOB_ID}/
+OUTPUT_DIR=/home/sc.uni-leipzig.de/kl63sahy/nextflow/nextflow-reports/${SLURM_JOB_ID}/
 mkdir -p $OUTPUT_DIR  # Create the output directory if it doesn't exist
 
 # Load Nextflow module

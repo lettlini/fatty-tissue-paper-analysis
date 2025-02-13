@@ -11,10 +11,10 @@ from matplotlib import pyplot as plt
 
 plt.rcParams.update(
     {
-        "text.usetex": True,
+        "text.usetex": False,
         "font.family": "sans-serif",
         "font.sans-serif": ["Fira Sans"],
-        "text.latex.preamble": r"\usepackage{siunitx}\usepackage[sfdefault]{FiraSans}\usepackage{newtxsf}\usepackage{sansmath}",
+        "mathtext.fontset": "stixsans",
     }
 )
 

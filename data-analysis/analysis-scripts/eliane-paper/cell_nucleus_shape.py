@@ -12,10 +12,10 @@ from scipy.stats import gaussian_kde, pearsonr
 
 plt.rcParams.update(
     {
-        "text.usetex": True,
+        "text.usetex": False,
         "font.family": "sans-serif",
         "font.sans-serif": ["Fira Sans"],
-        "text.latex.preamble": r"\usepackage{siunitx}\usepackage[sfdefault]{FiraSans}\usepackage{newtxsf}\usepackage{sansmath}",
+        "mathtext.fontset": "stixsans",
     }
 )
 
@@ -35,7 +35,7 @@ def cell_nucleus_shape(df_file: str, parent_dir_out: str):
             current_df = cell_line_df.filter(
                 pl.col("cell_culture_methodology").str.to_lowercase().eq(ccm)
             )
-            current_sampled_df = current_df.sample(n=30_000)
+            current_sampled_df = current_df.sample(n=min(30_000, len(current_df)))
 
             pR = pearsonr(current_df["cell_shape"], current_df["nucleus_shape"])
 

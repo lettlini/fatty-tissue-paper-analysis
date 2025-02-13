@@ -10,10 +10,10 @@ from scipy.stats import gaussian_kde, pearsonr
 
 plt.rcParams.update(
     {
-        "text.usetex": True,
+        "text.usetex": False,
         "font.family": "sans-serif",
         "font.sans-serif": ["Fira Sans"],
-        "text.latex.preamble": r"\usepackage{siunitx}\usepackage[sfdefault]{FiraSans}\usepackage{newtxsf}\usepackage{sansmath}",
+        "mathtext.fontset": "stixsans",
     }
 )
 
@@ -82,12 +82,12 @@ def d2min_vs_crsd(df_file: str, parent_dir_out: str):
             current_df[crsd_col].to_numpy(), current_df[d2min_col].to_numpy()
         ).statistic
 
-        current_sampled_df = current_df.sample(n=30_000)
+        current_sampled_df = current_df.sample(n=min(30_000, len(current_df)))
 
         current_figure = plot_d2min_vs_crsd(
             current_sampled_df[crsd_col],
             current_sampled_df[d2min_col],
-            rf"$D^2 _\text{{min}}$ vs CRSD ($\tau = \SI{{{lt}}}{{\minute}}$)"
+            rf"$D^2 _\text{{min}}$ vs CRSD ($\tau = {lt} \textit{{min}}$)"
             + f"(Pearson correlation: {pearson_corr:.2f})",
         )
 

@@ -12,10 +12,10 @@ import seaborn as sns
 
 plt.rcParams.update(
     {
-        "text.usetex": True,
+        "text.usetex": False,
         "font.family": "sans-serif",
         "font.sans-serif": ["Fira Sans"],
-        "text.latex.preamble": r"\usepackage{siunitx}\usepackage[sfdefault]{FiraSans}\usepackage{newtxsf}\usepackage{sansmath}",
+        "mathtext.fontset": "stixsans",
     }
 )
 
@@ -24,28 +24,28 @@ latex_strings = {
     "cell_area_mum_squared": {
         "name": "Cell Area",
         "formula": "A_C",
-        "unit": "\\si{\\micro\\meter\\squared}",
+        "unit": "\\mu m^2",
     },
     "local_density_per_mum_squared": {
         "name": "Local Density",
         "formula": "\\rho",
-        "unit": "\\si{\\per\\micro\\meter\\squared}",
+        "unit": "\\mu m^{-2}",
     },
     "nucleus_shape": {"name": "Nucleus Shape", "formula": "ns", "unit": ""},
     "nucleus_area_mum_squared": {
         "name": "Nucleus Area",
         "formula": "A_N",
-        "unit": "\\si{\\micro\\meter\\squared}",
+        "unit": "\\mu m^2",
     },
     "D2min": {
         "name": "D^2{{_\\text{{min}}}}",
         "formula": "D^2{{_\\text{{min}}}}",
-        "unit": "\\si{\\micro\\meter\\squared}",
+        "unit": "\\mu m^2",
     },
     "cage_relative_squared_displacement_mum_squared": {
         "name": "\\text{{CRSD}}",
         "formula": "\\text{{CRSD}}",
-        "unit": "\\si{\\micro\\meter\\squared}",
+        "unit": "\\mu m^2",
     },
 }
 
@@ -217,7 +217,7 @@ def phase_spaces(df_file: str, parent_dir_out: str):
             current_filtered_df[motility_measure],
         )
 
-        motility_str = f"${latex_strings[mot_m]['name']}$ $\\left(\\tau = \\SI{{{lag_time}}}{{\\minute}}\\right)$"
+        motility_str = f"${latex_strings[mot_m]['name']}$ $\\left(\\tau = {lag_time} \\text{{min}}\\right)$"
 
         fig = plot_heatmap(
             matrix,

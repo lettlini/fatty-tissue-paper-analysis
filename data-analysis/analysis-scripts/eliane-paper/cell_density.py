@@ -26,7 +26,7 @@ def cell_density(df_file: str, parent_dir_out: str):
 
         filtered_df = big_df.filter(pl.col(target_column).is_not_nan())
 
-        sampled_df = filtered_df.sample(20_000)
+        sampled_df = filtered_df.sample(n=min(20_000, len(filtered_df)))
         # Calculate the local density using gaussian_kde
 
         print(

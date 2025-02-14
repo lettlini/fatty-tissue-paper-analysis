@@ -86,7 +86,7 @@ def d2min_vs_crsd(df_file: str, parent_dir_out: str):
         current_figure = plot_d2min_vs_crsd(
             current_sampled_df[crsd_col],
             current_sampled_df[d2min_col],
-            r"$D^2 _\text\{min}$ vs CRSD ($\tau = "
+            r"$D^2 _\text{min}$ vs CRSD ($\tau = "
             + lt
             + " \textit{{min}}$)"
             + f"(Pearson correlation: {pearson_corr:.2f})",

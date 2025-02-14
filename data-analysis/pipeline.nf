@@ -4,7 +4,7 @@ workflow data_analysis {
     all_graph_datasets
 
     main:
-    parent_dir_out = file(params.parent_outdir_preparation).resolve(params.out_dir).toString()
+    parent_dir_out = file(params.parent_outdir_analysis).resolve(params.out_dir).toString()
 
     // clear the parent_outdir
     new File(parent_dir_out).deleteDir()

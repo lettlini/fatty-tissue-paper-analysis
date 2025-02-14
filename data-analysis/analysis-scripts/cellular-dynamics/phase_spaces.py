@@ -38,13 +38,13 @@ latex_strings = {
         "unit": "\\mu m^2",
     },
     "D2min": {
-        "name": "D^2{{_\\text{{min}}}}",
-        "formula": "D^2{{_\\text{{min}}}}",
+        "name": "D^2{_\\text{min}}",
+        "formula": "D^2{_\\text{min}}",
         "unit": "\\mu m^2",
     },
     "cage_relative_squared_displacement_mum_squared": {
-        "name": "\\text{{CRSD}}",
-        "formula": "\\text{{CRSD}}",
+        "name": "\\text{CRSD}",
+        "formula": "\\text{CRSD}",
         "unit": "\\mu m^2",
     },
 }
@@ -56,15 +56,21 @@ def get_label_string(quant_name, exponent) -> str:
 
     if len(y_unit) > 0:
         y_unit = (
-            f"\\ensuremath{{\\left[{y_unit}\\right]}}"
+            "\\ensuremath{\\left[" + y_unit + "\\right]}"
             if exponent == 0
-            else f"\\ensuremath{{\\left[ 10^{{{exponent}}} {y_unit} \\right]}}"
+            else "\\ensuremath{\\left[ 10^{" + exponent + "} " + y_unit + " \\right]}"
         )
         y_unit = f"in {y_unit}"
     else:
-        y_unit = f"10^{{{exponent}}}" if exponent != 0 else ""
+        y_unit = "10^{" + exponent + "}" if exponent != 0 else ""
 
-    label = f"{latex_strings[quant_name]['name']} \\ensuremath{{\\left( {latex_strings[quant_name]['formula']} \\right)}} {y_unit}"
+    label = (
+        latex_strings[quant_name]["name"]
+        + "\\ensuremath{\\left( "
+        + latex_strings[quant_name]["formula"]
+        + " \\right)} "
+        + y_unit
+    )
 
     return label
 
@@ -217,7 +223,14 @@ def phase_spaces(df_file: str, parent_dir_out: str):
             current_filtered_df[motility_measure],
         )
 
-        motility_str = f"${latex_strings[mot_m]['name']}$ $\\left(\\tau = {lag_time}{{\\minute}}\\right)$"
+        motility_str = (
+            "$"
+            + latex_strings[mot_m]["name"]
+            + "$"
+            + "$\\left(\\tau = "
+            + lag_time
+            + " min\\right)$"
+        )
 
         fig = plot_heatmap(
             matrix,

@@ -12,10 +12,11 @@ import seaborn as sns
 
 plt.rcParams.update(
     {
-        "text.usetex": False,
+        "text.usetex": True,
         "font.family": "sans-serif",
         "font.sans-serif": ["Fira Sans"],
         "mathtext.fontset": "stixsans",
+        "text.latex.preamble": r"\usepackage{siunitx}\usepackage[sfdefault]{FiraSans}\usepackage{newtxsf}\usepackage{sansmath}",
     }
 )
 
@@ -217,7 +218,7 @@ def phase_spaces(df_file: str, parent_dir_out: str):
             current_filtered_df[motility_measure],
         )
 
-        motility_str = f"${latex_strings[mot_m]['name']}$ $\\left(\\tau = {lag_time} \\text{{min}}\\right)$"
+        motility_str = f"${latex_strings[mot_m]['name']}$ $\\left(\\tau = \\SI{{{lag_time}}}{{\\minute}}\\right)$"
 
         fig = plot_heatmap(
             matrix,

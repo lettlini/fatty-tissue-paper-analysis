@@ -13,9 +13,12 @@ mkdir -p $OUTPUT_DIR  # Create the output directory if it doesn't exist
 
 # Load Nextflow module
 module load Nextflow
-# load Mamba module & make sure conda and mamba are on the path
+# Load Mamba module & make sure conda and mamba are on the path
 module load Mamba
 source /software/easybuild/el8/amd_zen1/all/Mamba/23.1.0-4/etc/profile.d/conda.sh
+
+# Load Texlive module (required for generating plots in the data-analysis pipeline)
+module load texlive/20230313-GCC-13.2.0
 
 CONFIG_ID=$1
 

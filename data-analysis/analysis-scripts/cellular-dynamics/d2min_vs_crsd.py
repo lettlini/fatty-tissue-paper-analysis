@@ -10,10 +10,10 @@ from scipy.stats import gaussian_kde, pearsonr
 
 plt.rcParams.update(
     {
-        "text.usetex": False,
+        "text.usetex": True,
         "font.family": "sans-serif",
         "font.sans-serif": ["Fira Sans"],
-        "mathtext.fontset": "stixsans",
+        "text.latex.preamble": r"\usepackage{siunitx}\usepackage[sfdefault]{FiraSans}\usepackage{newtxsf}\usepackage{sansmath}",
     }
 )
 

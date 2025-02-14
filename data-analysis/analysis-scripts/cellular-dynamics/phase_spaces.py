@@ -58,11 +58,15 @@ def get_label_string(quant_name, exponent) -> str:
         y_unit = (
             "\\ensuremath{\\left[" + y_unit + "\\right]}"
             if exponent == 0
-            else "\\ensuremath{\\left[ 10^{" + exponent + "} " + y_unit + " \\right]}"
+            else "\\ensuremath{\\left[ 10^{"
+            + str(exponent)
+            + "} "
+            + y_unit
+            + " \\right]}"
         )
         y_unit = f"in {y_unit}"
     else:
-        y_unit = "10^{" + exponent + "}" if exponent != 0 else ""
+        y_unit = "10^{" + str(exponent) + "}" if exponent != 0 else ""
 
     label = (
         latex_strings[quant_name]["name"]

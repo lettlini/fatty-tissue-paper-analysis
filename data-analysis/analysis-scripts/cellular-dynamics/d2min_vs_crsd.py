@@ -13,6 +13,7 @@ plt.rcParams.update(
         "text.usetex": False,
         "font.family": "sans-serif",
         "font.sans-serif": ["Fira Sans"],
+        "mathtext.fontset": "stixsans",
     }
 )
 

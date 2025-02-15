@@ -60,15 +60,15 @@ def get_label_string(quant_name, exponent) -> str:
             if exponent == 0
             else "\\left[ 10^{" + str(exponent) + "} " + y_unit + " \\right]"
         )
-        y_unit = f"in {y_unit}"
+        y_unit = f"in ${y_unit}$"
     else:
-        y_unit = "10^{" + str(exponent) + "}" if exponent != 0 else ""
+        y_unit = "$10^{" + str(exponent) + "}$" if exponent != 0 else ""
 
     label = (
         latex_strings[quant_name]["name"]
-        + "\\left( "
+        + "$\\left( "
         + latex_strings[quant_name]["formula"]
-        + " \\right) "
+        + " \\right)$ "
         + y_unit
     )
 
@@ -236,8 +236,8 @@ def phase_spaces(df_file: str, parent_dir_out: str):
             matrix,
             xbin,
             ybin,
-            x_label=f"${x_label}$",
-            y_label=f"${y_label}$",
+            x_label=x_label,
+            y_label=y_label,
             title=f"{motility_str} vs {latex_strings[inx_col]['name']} and {latex_strings[iny_col]['name']}",
             colorbar_label=motility_str,
             z_cutoff=np.percentile(

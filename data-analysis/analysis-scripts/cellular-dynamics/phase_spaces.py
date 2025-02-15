@@ -66,7 +66,7 @@ def get_label_string(quant_name, exponent) -> str:
 
     label = (
         latex_strings[quant_name]["name"]
-        + "$\\left( "
+        + " $\\left( "
         + latex_strings[quant_name]["formula"]
         + " \\right)$ "
         + y_unit

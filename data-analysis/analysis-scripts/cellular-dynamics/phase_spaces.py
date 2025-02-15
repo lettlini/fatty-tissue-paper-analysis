@@ -236,8 +236,8 @@ def phase_spaces(df_file: str, parent_dir_out: str):
             matrix,
             xbin,
             ybin,
-            x_label=x_label,
-            y_label=y_label,
+            x_label=f"${x_label}$",
+            y_label=f"${y_label}$",
             title=f"{motility_str} vs {latex_strings[inx_col]['name']} and {latex_strings[iny_col]['name']}",
             colorbar_label=motility_str,
             z_cutoff=np.percentile(

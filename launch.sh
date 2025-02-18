@@ -17,9 +17,6 @@ module load Nextflow
 module load Mamba
 source /software/easybuild/el8/amd_zen1/all/Mamba/23.1.0-4/etc/profile.d/conda.sh
 
-# Load Texlive module (required for generating plots in the data-analysis pipeline)
-module load texlive/20230313-GCC-13.2.0
-
 CONFIG_ID=$1
 
 nextflow run ./pipeline.nf \

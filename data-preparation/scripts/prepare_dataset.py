@@ -2,6 +2,7 @@ import os
 from argparse import ArgumentParser
 
 import cv2
+import toml
 from core_data_utils.datasets import BaseDataSet, BaseDataSetEntry
 from core_data_utils.datasets.image import ImageDataset
 
@@ -35,8 +36,9 @@ if __name__ == "__main__":
 
     parser = ArgumentParser()
     parser.add_argument("--indir", type=str, required=True)
+    parser.add_argument("--dataset_config", type=str, required=True)
+    parser.add_argument("--parent_config", type=str, required=True)
     parser.add_argument("--outfile", type=str, required=True)
-    parser.add_argument("--provider", type=str, required=True)
     parser.add_argument(
         "--cpus",
         required=True,
@@ -46,13 +48,19 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.provider.lower() == "eliane":
+    dataset_config = toml.load(args.dataset_config)
+    parent_config = toml.load(args.parent_config)
+    full_config = parent_config | dataset_config
+
+    provider = full_config["experimental-parameters"]["provider"]
+
+    if provider.lower() == "eliane":
         x = load_dir_eliane(args.indir)
 
-    elif args.provider.lower() == "juergen":
+    elif provider.lower() == "juergen":
         x = load_dir_juergen(args.indir)
 
     else:
-        raise RuntimeError(f"Data provider '{args.provider}' unknown.")
+        raise RuntimeError(f"Data provider '{provider}' unknown.")
 
     x.to_pickle(args.outfile)

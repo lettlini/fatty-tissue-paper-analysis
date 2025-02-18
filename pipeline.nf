@@ -10,12 +10,10 @@ workflow {
         def subdirs = dir.listFiles().findAll { it.isDirectory() }
         // assuming the parent directory name is the config type
         subdirs.collect { subdir ->
-            [cfile, subdir]
+            [subdir.name, subdir, cfile]
         }
     }
 
-    parent_config.combine(parent_directories)
+    parent_directories.combine(parent_config)
         | view
-        | data_preparation
-        | data_analysis
 }

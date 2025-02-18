@@ -16,4 +16,6 @@ workflow {
 
     parent_directories.combine(parent_config)
         | view
+        | data_preparation
+        | data_analysis
 }

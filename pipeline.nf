@@ -13,9 +13,12 @@ workflow {
             [subdir.name, subdir, cfile]
         }
     }
+    if (params.test == true) {
+        // Only executes if params.test is explicitly true
+        println("Test mode is enabled")
+        parent_directories = parent_directories.take(3)
+    }
 
     parent_directories.combine(parent_config)
-        | view
         | data_preparation
-        | data_analysis
 }

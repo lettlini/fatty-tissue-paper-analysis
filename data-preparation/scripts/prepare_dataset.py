@@ -37,7 +37,6 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--indir", type=str, required=True)
     parser.add_argument("--dataset_config", type=str, required=True)
-    parser.add_argument("--parent_config", type=str, required=True)
     parser.add_argument("--outfile", type=str, required=True)
     parser.add_argument(
         "--cpus",
@@ -49,10 +48,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     dataset_config = toml.load(args.dataset_config)
-    parent_config = toml.load(args.parent_config)
-    full_config = parent_config | dataset_config
 
-    provider = full_config["experimental-parameters"]["provider"]
+    provider = dataset_config["experimental-parameters"]["provider"]
 
     if provider.lower() == "eliane":
         x = load_dir_eliane(args.indir)

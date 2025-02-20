@@ -17,6 +17,9 @@ workflow {
         println("Test mode is enabled")
         parent_directories = parent_directories.take(3)
     }
+    else {
+        println("Test mode is disabled")
+    }
 
     parent_directories
         | data_preparation

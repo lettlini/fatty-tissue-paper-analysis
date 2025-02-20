@@ -18,5 +18,7 @@ workflow {
         parent_directories = parent_directories.take(3)
     }
 
-    parent_directories | data_preparation
+    parent_directories
+        | data_preparation
+        | data_analysis
 }

@@ -1,6 +1,6 @@
 include { label_objects                          } from './cellular-dynamics-nf-modules/modules/image_processing/label_objects/main.nf'
 include { nuclei_segmentation                    } from './cellular-dynamics-nf-modules/modules/image_processing/nuclei_segmentation/main.nf'
-include { basic_filter as confluency_filter      } from './cellular-dynamics-nf-modules/modules/image_processing/basic_filter/main.nf'
+include { confluency_filter                      } from './cellular-dynamics-nf-modules/modules/image_processing/basic_filter/main.nf'
 include { cell_approximation                     } from './cellular-dynamics-nf-modules/modules/image_processing/cell_approximation/main.nf'
 include { label_objects as label_nuclei ; label_objects as label_cells } from './cellular-dynamics-nf-modules/modules/image_processing/label_objects/main.nf'
 include { structure_abstraction                  } from './cellular-dynamics-nf-modules/modules/graph_processing/structure_abstraction/main.nf'
@@ -18,10 +18,16 @@ workflow data_preparation {
     input_datasets
 
     main:
+
     publish_dir = params.parent_outdir_preparation + params.out_dir
+
+    // clear the parent_outdir
+    new File(publish_dir).deleteDir()
+    new File(publish_dir).mkdirs()
+
     prepare_dataset_from_raw(input_datasets, publish_dir)
-    confluency_filter(prepare_dataset_from_raw.out.results, publish_dir)
-    nuclei_segmentation(confluency_filter.out.results, params.min_nucleus_area_mumsq, publish_dir)
+    nuclei_segmentation(prepare_dataset_from_raw.out.results, params.min_nucleus_area_mumsq, publish_dir)
+    confluency_filter(nuclei_segmentation.out.results, publish_dir)
 
     label_nuclei(nuclei_segmentation.out.results, "nuclei", publish_dir)
     cell_approximation(nuclei_segmentation.out.results, params.cell_cutoff_mum, publish_dir)

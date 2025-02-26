@@ -1,6 +1,6 @@
 include { label_objects                          } from './cellular-dynamics-nf-modules/modules/image_processing/label_objects/main.nf'
 include { nuclei_segmentation                    } from './cellular-dynamics-nf-modules/modules/image_processing/nuclei_segmentation/main.nf'
-include { confluency_filter                      } from './cellular-dynamics-nf-modules/modules/image_processing/basic_filter/main.nf'
+include { confluency_filter                      } from './cellular-dynamics-nf-modules/modules/image_processing/confluency_filter/main.nf'
 include { cell_approximation                     } from './cellular-dynamics-nf-modules/modules/image_processing/cell_approximation/main.nf'
 include { label_objects as label_nuclei ; label_objects as label_cells } from './cellular-dynamics-nf-modules/modules/image_processing/label_objects/main.nf'
 include { structure_abstraction                  } from './cellular-dynamics-nf-modules/modules/graph_processing/structure_abstraction/main.nf'

@@ -19,7 +19,11 @@ def get_dataset_metadata(dataset_name: str, provider_name: str) -> tuple[str, st
                 f"Could not infer cell line from dataset name '{dataset_name}'"
             )
 
-        if dataset_name.lower().endswith("_cc"):
+        if (
+            dataset_name.lower().endswith("_cc")
+            or "_vis_" in dataset_name.lower()
+            or "_sc_" in dataset_name.lower()
+        ):
             cell_culture_method = "co-culture"
         else:
             cell_culture_method = "control"
